@@ -1,0 +1,29 @@
+h1 {
+	font-family: sans-serif;
+}
+
+h2 {
+	font-size: 40px;
+	font-family: sans-serif;
+	color: #00E640;
+}
+
+body {
+	background-color: #E26A6A;
+	text-align: center;
+}
+
+.newClass {
+	color: blue;
+}
+
+/*circle {
+    fill: blue;
+}*/
+
+#infoField {
+	width: 300px;
+	height: 600px;
+	float: right;
+	background-color: grey;
+}
