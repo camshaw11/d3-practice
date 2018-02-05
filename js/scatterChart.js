@@ -45,10 +45,17 @@ d3.json('js/ageWeight.json', function(error, jsonData){
 	}
 	data = jsonData;
 
+var margin = {
+	top: 50,
+	right: 50,
+	bottom: 50,
+	left: 50
+}
 
 
-var height 		= 800;
-var width 		= 800;
+
+var height 	= 800 - margin.top - margin.bottom;
+var width 	= 800 - margin.left - margin.right;
 
 var yMax = 0;
 var xMax = 0;
@@ -79,10 +86,12 @@ var color = d3.scaleLinear()
 
 // var tb = data.getSelection()
 
-d3.select('body').append('svg')
-	.attr('width', width)
-	.attr('height', height)
+var Graph = d3.select('#nodeContainer').append('svg')
+	.attr('width', width + margin.left + margin.right)
+	.attr('height', height + margin.top + margin.bottom)
 	.style('background-color', 'grey')
+	.append('g') //group svgs together
+	.attr('transform', 'translate('+margin.left+','+margin.top+')')
 	.selectAll('circle')
 		.data(data)
 		.enter().append('circle')
@@ -91,12 +100,8 @@ d3.select('body').append('svg')
 				return color(d.weight)
 			})
 			.attr('r', '5')
-			.attr('cx', function(d) {
-				return xScale(d.weight)
-			})
-			.attr('cy', function(d){
-				return height - yScale(d.age)
-			})
+			.attr('cx', 0)
+			.attr('cy', height)
 
 
 
@@ -116,14 +121,53 @@ d3.select('body').append('svg')
 
 
 
+			Graph.transition()
+				.attr('cx', function(d) {
+					return xScale(d.weight)
+				})
+				.attr('cy', function(d){
+					return height - yScale(d.age)
+				})
+				.delay(function(d, i) {
+					return i * 20
+				})
+				.duration(1000)
+				.ease(d3.easeBounce);
 
 
 
 
 
 
+			// y axis
+			var vGuideScale = d3.scaleLinear()
+				.domain([0, yMax])
+				.range([height, 0])
 
-			.exit();
+			var vAxis = d3.axisLeft(vGuideScale)
+				.ticks(10)
+
+			var vGuide = d3.select('svg').append('g')
+			vAxis(vGuide)
+			vGuide.attr('transform', 'translate('+margin.left+','+margin.top+')')
+
+			// x axis
+			var hGuideScale = d3.scaleLinear()
+				.domain([0, xMax])
+				.range([0, width])
+
+			var hAxis = d3.axisBottom(hGuideScale)
+				.ticks(10)
+
+			var hGuide = d3.select('svg').append('g')
+			hAxis(hGuide)
+			hGuide.attr('transform', 'translate('+margin.left+','+(height + margin.top)+')')
+
+
+
+
+
+
 
 });
 
